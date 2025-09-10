@@ -30,10 +30,12 @@
 
 This project visualizes cloud risk data using an interactive graph. The main features include collapsible nodes and dynamic filtering.
 
+
 ### Collapsibility
 - Nodes in the graph can be expanded or collapsed to show or hide their children.
 - The state of each node (collapsed/expanded) is managed in React state.
 - Clicking a node toggles its collapsed state, updating the graph view accordingly.
+- When nodes are collapsed or expanded, the viewport is automatically adjusted using React Flow's `fitView` function to keep all visible nodes in view.
 
 ### Filtering
 - Users can filter nodes based on risk level or other criteria.
@@ -43,12 +45,14 @@ This project visualizes cloud risk data using an interactive graph. The main fea
 ---
 
 
+
 ## Graph Rendering
 - The graph is rendered using React and SVG for scalable visuals.
 - **React Flow** manages the graph structure, node/edge rendering, and user interactions (drag, select, connect).
 - **Dagre** is used to calculate node positions for a clean, readable layout.
 - Nodes and edges are dynamically generated from data.
 - Layout and positioning are handled in the `Graph.tsx` and `CustomNode.tsx` components.
+- Icons for node types and status are provided by the `lucide-react` library for a modern, consistent look (see `CustomNode.tsx`).
 
 ## Filtering Logic
 - Filter state is managed in React (e.g., via hooks or context).
