@@ -79,7 +79,7 @@ export default function Graph() {
         let visibleEdges: Edge[] = [];
 
         // Helper to check if node passes filter
-        function passesFilter(node: any) {
+        function passesFilter(node: typeof rawData.nodes[0]) {
             if (activeFilter === 'Alerts') {
                 return node.alerts >= 1;
             }
@@ -119,7 +119,7 @@ export default function Graph() {
     const { nodes, edges } = getVisibleGraph();
 
     // Toggle collapse
-    const onNodeClick = useCallback((_: any, node: Node) => {
+    const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
         if (rawData.nodes.find((n) => n.id === node.id)?.children) {
             setCollapsed((prev) => {
                 setTimeout(() => fitView({ padding: 0.2, duration: 800 }), 300);
