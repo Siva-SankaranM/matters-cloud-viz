@@ -1,69 +1,65 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# Cloud Risk Visualization
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **Vite**: Fast build tool and development server for modern web projects. Vite provides instant server start, lightning-fast HMR, and optimized production builds.
+- **TypeScript**: Strongly typed superset of JavaScript for safer and more maintainable code. All components and logic are written in TypeScript.
+- **React**: UI library for building interactive user interfaces. The graph and UI are built using React components.
+- **React Flow**: Library for building node-based UIs and interactive graphs in React. Handles rendering, dragging, connecting, and interaction of nodes and edges.
+- **Dagre**: Graph layout algorithm used to automatically position nodes in a directed acyclic graph (DAG) for clear visualization. Integrated with React Flow for automatic layout.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Setup Instructions
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. **Install dependencies:**
+  ```zsh
+  npm install
+  ```
+2. **Start the development server:**
+  ```zsh
+  npm run dev
+  ```
+3. **Open the app:**
+  Visit `http://localhost:5173` in your browser.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Brief Explanation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This project visualizes cloud risk data using an interactive graph. The main features include collapsible nodes and dynamic filtering.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Collapsibility
+- Nodes in the graph can be expanded or collapsed to show or hide their children.
+- The state of each node (collapsed/expanded) is managed in React state.
+- Clicking a node toggles its collapsed state, updating the graph view accordingly.
+
+### Filtering
+- Users can filter nodes based on risk level or other criteria.
+- Filtering updates the graph to show only nodes matching the selected filters.
+- The filtering logic is implemented in the graph component, which recalculates visible nodes and edges based on filter state.
+
+---
+
+
+## Graph Rendering
+- The graph is rendered using React and SVG for scalable visuals.
+- **React Flow** manages the graph structure, node/edge rendering, and user interactions (drag, select, connect).
+- **Dagre** is used to calculate node positions for a clean, readable layout.
+- Nodes and edges are dynamically generated from data.
+- Layout and positioning are handled in the `Graph.tsx` and `CustomNode.tsx` components.
+
+## Filtering Logic
+- Filter state is managed in React (e.g., via hooks or context).
+- When filters change, the graph data is reprocessed to include only matching nodes and edges.
+- Filtering is efficient and updates the UI in real time.
+
+## Collapsible Node Functionality
+- Each node tracks its collapsed/expanded state.
+- Clicking a node toggles its state and updates the graph.
+- Child nodes are hidden when a parent is collapsed, improving readability for large graphs.
+
+---
+
+For more details, see the source code in `src/components/Graph.tsx` and `src/components/CustomNode.tsx`.
