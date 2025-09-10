@@ -7,8 +7,9 @@
  * @returns A styled node element with icon, badges, label, and edge handles.
  */
 import { Handle, Position } from "@xyflow/react";
-import { AlertTriangle, Box, Cloud, Database, Filter, Server } from "lucide-react";
+import { AlertTriangle, Box, Cloud, Database, Server, SlidersVertical } from "lucide-react";
 import clsx from "clsx";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 
 const typeColors: Record<string, string> = {
@@ -48,33 +49,55 @@ export default function CustomNode({ data }: { data: NodeData }) {
     };
 
     return (
-        <div className="relative flex flex-col items-center">
-            {/* === Badges above circle === */}
-            <div className="flex gap-1 absolute -top-7 transition-all">
-                <div className="flex items-center gap-1 rounded-2 border-1 border-gray-200 px-2 py-0.5 text-xs text-black-600 font-semibold shadow">
-                    <AlertTriangle size={12} color="#C74137" /> {data.alerts}
-                </div>
-                <div className="flex items-center gap-1 rounded-2 border-1 border-gray-200 px-2 py-0.5 text-xs text-black-600 font-semibold shadow">
-                    <Filter size={12} color="#C74137" /> {data.misconfigs}
-                </div>
-            </div>
+        <Tooltip.Provider delayDuration={150}>
+            <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                    <div className="relative flex flex-col items-center">
+                        {/* === Badges above circle === */}
+                        <div className="flex gap-1 absolute -top-7 transition-all">
+                            <div className="flex items-center gap-1 rounded-2 border-1 border-gray-200 px-2 py-0.5 text-xs text-black-600 font-semibold shadow">
+                                <AlertTriangle size={12} color="#C74137" /> {data.alerts}
+                            </div>
+                            <div className="flex items-center gap-1 rounded-2 border-1 border-gray-200 px-2 py-0.5 text-xs text-black-600 font-semibold shadow">
+                                <SlidersVertical size={12} color="#C74137" /> {data.misconfigs}
+                            </div>
+                        </div>
 
-            {/* === Circle with background color + text === */}
-            <div
-                className={clsx(
-                    "transition-all w-20 h-20 rounded-full flex items-center justify-center text-white font-semibold shadow-md hover:shadow-lg transition",
-                    colorClass
-                )}
-            >
-                <div className="flex flex-col items-center">
-                    {getIcon()}
-                </div>
-            </div>
-            <span className="absolute -bottom-7 text-sm font-semibold">{data.label}</span>
+                        {/* === Circle with background color + text === */}
+                        <div
+                            className={clsx(
+                                "transition-all w-20 h-20 rounded-full flex items-center justify-center text-white font-semibold shadow-md hover:shadow-lg transition",
+                                colorClass
+                            )}
+                        >
+                            <div className="flex flex-col items-center">
+                                {getIcon()}
+                            </div>
+                        </div>
+                        <span className="absolute -bottom-7 text-sm font-semibold">{data.label}</span>
 
-            {/* === Handles for edges === */}
-            <Handle type="target" position={Position.Left} className="!bg-gray-500" />
-            <Handle type="source" position={Position.Right} className="!bg-gray-500" />
-        </div>
+                        {/* === Handles for edges === */}
+                        <Handle type="target" position={Position.Left} className="!bg-gray-500" />
+                        <Handle type="source" position={Position.Right} className="!bg-gray-500" />
+                    </div>
+                </Tooltip.Trigger>
+
+                {/* Tooltip Content */}
+                <Tooltip.Portal>
+                    <Tooltip.Content
+                        className="rounded-md bg-gray-700 p-5 text-sm text-white shadow-lg"
+                        side="bottom"
+                        sideOffset={8}
+                    >
+                        <div className="font-semibold">{data.label}</div>
+                        <div className="text-sm opacity-90">Type: {data.type}</div>
+                        <div className="text-sm opacity-90">Alerts: {data.alerts}</div>
+                        <div className="text-sm opacity-90">Misconfigs: {data.misconfigs}</div>
+                        <Tooltip.Arrow className="fill-gray-700" />
+                    </Tooltip.Content>
+                </Tooltip.Portal>
+            </Tooltip.Root>
+
+        </Tooltip.Provider>
     );
 }
