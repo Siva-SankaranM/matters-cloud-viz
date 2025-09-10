@@ -4,28 +4,7 @@ import '@xyflow/react/dist/style.css';
 import dagre from "dagre";
 import CustomNode from "./CustomNode";
 import { AlertTriangle, Settings } from "lucide-react";
-
-const rawData = {
-    nodes: [
-        { id: "cloud", label: "Cloud", type: "cloud", alerts: 253, misconfigs: 18, children: ["aws1", "aws2", "gcp", "saas"] },
-        { id: "aws1", label: "AWS 1", type: "aws", alerts: 84, misconfigs: 3, children: ["s3"] },
-        { id: "aws2", label: "AWS 2", type: "aws", alerts: 124, misconfigs: 4, children: ["rds"] },
-        { id: "gcp", label: "GCP", type: "gcp", alerts: 28, misconfigs: 9 },
-        { id: "saas", label: "SaaS", type: "saas", alerts: 123, misconfigs: 5 },
-        { id: "s3", label: "S3", type: "service", alerts: 66, misconfigs: 3 },
-        { id: "lambda", label: "Lambda", type: "service", alerts: 66, misconfigs: 3 },
-        { id: "dynamo", label: "DynamoDB", type: "database", alerts: 0, misconfigs: 1 },
-        { id: "rds", label: "RDS", type: "service", alerts: 68, misconfigs: 3, children: ["lambda", "dynamo"] }
-    ],
-    edges: [
-        { source: "cloud", target: "aws1" },
-        { source: "cloud", target: "aws2" },
-        { source: "cloud", target: "gcp" },
-        { source: "cloud", target: "saas" },
-        { source: "aws1", target: "s3" },
-        { source: "aws2", target: "rds" }
-    ]
-};
+import type { CloudGraphData } from "../types/graphData";
 
 type FilterType = 'All' | 'Alerts' | 'Misconfigurations';
 
@@ -44,8 +23,15 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
 const nodeWidth = 160;
 const nodeHeight = 80;
 
+/**
+ * Arranges the given nodes and edges using the Dagre layout algorithm.
+ *
+ * This function sets up the Dagre graph with the specified direction (`rankdir`),
+ * node separation (`nodesep`), and rank separation (`ranksep`). It then adds all nodes
+ * and edges to the Dagre graph, computes their positions, and updates each node's
+ * `position` property accordingly.
+ */
 function layout(nodes: Node[], edges: Edge[], direction = "LR") {
-    // const isHorizontal = direction === "LR";
     dagreGraph.setGraph({ rankdir: direction, nodesep: 100, ranksep: 80 });
 
     nodes.forEach((node) => {
@@ -67,7 +53,7 @@ function layout(nodes: Node[], edges: Edge[], direction = "LR") {
 
 const nodeTypes = { custom: CustomNode };
 
-export default function Graph() {
+export default function Graph({ graphData }: { graphData: CloudGraphData }) {
     const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
     const { fitView } = useReactFlow();
 
@@ -79,7 +65,7 @@ export default function Graph() {
         let visibleEdges: Edge[] = [];
 
         // Helper to check if node passes filter
-        function passesFilter(node: typeof rawData.nodes[0]) {
+        function passesFilter(node: typeof graphData.nodes[0]) {
             if (activeFilter === 'Alerts') {
                 return node.alerts >= 1;
             }
@@ -90,12 +76,12 @@ export default function Graph() {
         }
 
         function addNode(id: string) {
-            const n = rawData.nodes.find((x) => x.id === id);
+            const n = graphData.nodes.find((x) => x.id === id);
             if (!n || !passesFilter(n)) return;
             visibleNodes.push({
                 id: n.id,
+                // Render using our custom node
                 type: "custom",
-                // style: { stroke: edgeColors[n.type], strokeWidth: 2 },
                 data: { ...n, collapsed: collapsed[n.id] ?? false },
                 position: { x: 0, y: 0 },
 
@@ -103,8 +89,9 @@ export default function Graph() {
 
             if (!(collapsed[n.id] ?? false) && n.children) {
                 n.children.forEach((childId) => {
-                    const childNode = rawData.nodes.find((x) => x.id === childId);
+                    const childNode = graphData.nodes.find((x) => x.id === childId);
                     if (childNode && passesFilter(childNode)) {
+                        // style the edge based on child node type
                         visibleEdges.push({ id: `${n.id}-${childId}`, source: n.id, target: childId, animated: true, style: { stroke: edgeColors[childNode.type], strokeWidth: 2 } });
                         addNode(childId);
                     }
@@ -120,8 +107,9 @@ export default function Graph() {
 
     // Toggle collapse
     const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
-        if (rawData.nodes.find((n) => n.id === node.id)?.children) {
+        if (graphData.nodes.find((n) => n.id === node.id)?.children) {
             setCollapsed((prev) => {
+                // After expanding/collapsing, auto-fit the view to show all nodes
                 setTimeout(() => fitView({ padding: 0.2, duration: 800 }), 300);
                 return { ...prev, [node.id]: !prev[node.id] }
             });
@@ -130,6 +118,7 @@ export default function Graph() {
 
     return (
         <div style={{ height: "100vh" }}>
+            {/* Filtering */}
             <div className="flex items-center gap-3 bg-white p-2 shadow absolute top-4 left-10 border-1 border-gray-200 z-10 rounded">
                 {['All', 'Alerts', 'Misconfigurations'].map((filter) => (
                     <button
@@ -146,6 +135,7 @@ export default function Graph() {
                     </button>
                 ))}
             </div>
+            {/* React Flow Graph */}
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -155,6 +145,7 @@ export default function Graph() {
 
             >
                 <Background />
+                {/* showing controls like zoom in/out and fit view */}
                 <Controls position="top-right" orientation="horizontal" style={{ background: 'white', padding: '8px', borderRadius: '4px', color: '#155DFB' }} />
             </ReactFlow>
         </div>

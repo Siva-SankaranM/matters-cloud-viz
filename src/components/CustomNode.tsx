@@ -1,3 +1,11 @@
+/**
+ * Component used to render a custom node in our graph for a react-flow diagram, it displays an icon and color
+ * based on the node type, along with badges for alerts and misconfigurations.
+ * The component also includes handles for connecting edges in the diagram.
+ *
+ * @param data - The node data containing type, label, alerts, and misconfigs.
+ * @returns A styled node element with icon, badges, label, and edge handles.
+ */
 import { Handle, Position } from "@xyflow/react";
 import { AlertTriangle, Box, Cloud, Database, Filter, Server } from "lucide-react";
 import clsx from "clsx";
