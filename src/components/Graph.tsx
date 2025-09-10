@@ -45,7 +45,7 @@ const nodeWidth = 160;
 const nodeHeight = 80;
 
 function layout(nodes: Node[], edges: Edge[], direction = "LR") {
-    const isHorizontal = direction === "LR";
+    // const isHorizontal = direction === "LR";
     dagreGraph.setGraph({ rankdir: direction, nodesep: 100, ranksep: 80 });
 
     nodes.forEach((node) => {
