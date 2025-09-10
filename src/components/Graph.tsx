@@ -99,7 +99,12 @@ export default function Graph({ graphData }: { graphData: CloudGraphData }) {
             }
         }
 
-        addNode("cloud");
+        // Add all root nodes (nodes without any parent)
+        const childIds = new Set(graphData.nodes.flatMap(n => n.children ?? []));
+        graphData.nodes
+            .filter(n => !childIds.has(n.id))
+            .forEach(rootNode => addNode(rootNode.id));
+
         return layout(visibleNodes, visibleEdges, "LR");
     }, [collapsed, activeFilter]);
 
