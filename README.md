@@ -1,6 +1,8 @@
 
 
-# Cloud Risk Visualization
+# Matters.ai | Interactive Cloud Risk Visualization
+
+[Live on Vercel 🚀](https://matters-cloud-viz.vercel.app/)
 
 ## Tech Stack
 
@@ -28,22 +30,7 @@
 
 ## Brief Explanation
 
-This project visualizes cloud risk data using an interactive graph. The main features include collapsible nodes and dynamic filtering.
-
-
-### Collapsibility
-- Nodes in the graph can be expanded or collapsed to show or hide their children.
-- The state of each node (collapsed/expanded) is managed in React state.
-- Clicking a node toggles its collapsed state, updating the graph view accordingly.
-- When nodes are collapsed or expanded, the viewport is automatically adjusted using React Flow's `fitView` function to keep all visible nodes in view.
-
-### Filtering
-- Users can filter nodes based on risk level or other criteria.
-- Filtering updates the graph to show only nodes matching the selected filters.
-- The filtering logic is implemented in the graph component, which recalculates visible nodes and edges based on filter state.
-
----
-
+This project visualizes cloud risk data using an interactive graph. The main features include collapsible nodes and auto-adjusting view port.
 
 
 ## Graph Rendering
@@ -55,14 +42,20 @@ This project visualizes cloud risk data using an interactive graph. The main fea
 - Icons for node types and status are provided by the `lucide-react` library for a modern, consistent look (see `CustomNode.tsx`).
 
 ## Filtering Logic
-- Filter state is managed in React (e.g., via hooks or context).
-- When filters change, the graph data is reprocessed to include only matching nodes and edges.
-- Filtering is efficient and updates the UI in real time.
+- The filter state is managed in React using a state variable (activeFilter).
+- When a filter is selected (e.g., "Alerts" or "Misconfigurations"), the graph component recalculates which nodes and edges should be visible.
+- The filtering is performed by a helper function (passesFilter) that checks each node:
+- If the "Alerts" filter is active, only nodes with one or more alerts (node.alerts >= 1) are shown.
+- If the "Misconfigurations" filter is active, only nodes with one or more misconfigurations (node.misconfigs >= 1) are shown.
+- If "All" is selected, all nodes are shown.
+- The graph is then rebuilt to include only nodes and edges that pass the filter, and the UI updates in real time.
 
-## Collapsible Node Functionality
-- Each node tracks its collapsed/expanded state.
-- Clicking a node toggles its state and updates the graph.
-- Child nodes are hidden when a parent is collapsed, improving readability for large graphs.
+
+### Collapsibility
+- Nodes in the graph can be expanded or collapsed to show or hide their children.
+- The state of each node (collapsed/expanded) is managed in React state.
+- Clicking a node toggles its collapsed state, updating the graph view accordingly.
+- When nodes are collapsed or expanded, the viewport is automatically adjusted using React Flow's `fitView` function to keep all visible nodes in view.
 
 ---
 
