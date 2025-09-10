@@ -4,6 +4,7 @@
 
 [Live on Vercel 🚀](https://matters-cloud-viz.vercel.app/)
 
+
 ## Tech Stack
 
 - **Vite**: Fast build tool and development server for modern web projects. Vite provides instant server start, lightning-fast HMR, and optimized production builds.
@@ -11,6 +12,8 @@
 - **React**: UI library for building interactive user interfaces. The graph and UI are built using React components.
 - **React Flow**: Library for building node-based UIs and interactive graphs in React. Handles rendering, dragging, connecting, and interaction of nodes and edges.
 - **Dagre**: Graph layout algorithm used to automatically position nodes in a directed acyclic graph (DAG) for clear visualization. Integrated with React Flow for automatic layout.
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development. Used for styling components and layouts with a modern, responsive design.
+
 
 
 ## Setup Instructions
