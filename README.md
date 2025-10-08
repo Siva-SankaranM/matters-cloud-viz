@@ -1,6 +1,6 @@
 
 
-# Matters.ai | Interactive Cloud Risk Visualization
+# Interactive Cloud Risk Visualization
 
 [Live on Vercel 🚀](https://matters-cloud-viz.vercel.app/)
 
